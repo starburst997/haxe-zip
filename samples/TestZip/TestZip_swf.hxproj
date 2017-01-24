@@ -51,7 +51,7 @@
   <options>
     <option showHiddenPaths="False" />
     <option testMovie="Default" />
-    <option testMovieCommand="Server\TestZip.swf" />
+    <option testMovieCommand="Server\swf\TestZip.swf" />
   </options>
   <!-- Plugin storage -->
   <storage />

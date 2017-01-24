@@ -290,7 +290,7 @@ class Zip
     //trace("Compressed Data!!!!!");
 
     // For some weird reason, JS does not like the standard way
-    #if js
+    #if (js || flash)
     var bufSize = 65536;
     if ( tmp == null )
       tmp = haxe.io.Bytes.alloc(bufSize);

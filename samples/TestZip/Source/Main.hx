@@ -13,7 +13,7 @@ class Main
 
   public function new()
   {
-    test = new DebugPlayer();
+    test = new TestZip();
   }
 
   static function main()
