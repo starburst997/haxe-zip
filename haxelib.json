@@ -1,0 +1,13 @@
+{
+	"name" : "zip",
+	"url" : "",
+	"license" : "",
+  "description" : "Library to provide a streaming Zip Reader experience and fix some issue.",
+  "version" : "0.0.1",
+  "classPath": "src/",
+	"releasenote" : "",
+	"contributors" : ["starburst997"],
+	"dependencies" : {
+
+  }
+}

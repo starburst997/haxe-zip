@@ -1,0 +1,6 @@
+-lib zip
+-lib multiloader
+-cp Source
+-js Server/js/TestZip.js
+-main Main
+

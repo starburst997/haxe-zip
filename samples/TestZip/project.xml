@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<project>
+
+	<meta title="Test Zip" package="com.failsafegames.testzip" version="1.0.0" company="FailSafe Games" />
+
+  <window width="800" height="600" background="#FFFFFF" fps="61" />
+  <window width="0" height="0" if="mobile" />
+  <window width="0" height="0" if="html5" />
+
+	<app main="MainOpenFL" path="Export" file="TestZip" />
+
+	<source path="Source" />
+
+	<haxelib name="openfl" />
+  <haxelib name="stats" />
+	<haxelib name="zip" />
+  <haxelib name="multiloader" />
+
+	<assets path="Assets" rename="assets" />
+
+  <config:ios deployment="6.0" />
+
+</project>
