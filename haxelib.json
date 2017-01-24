@@ -1,7 +1,7 @@
 {
 	"name" : "zip",
-	"url" : "",
-	"license" : "",
+	"url" : "https://github.com/starburst997/haxe-zip",
+	"license" : "MIT",
   "description" : "Library to provide a streaming Zip Reader experience and fix some issue.",
   "version" : "0.0.1",
   "classPath": "src/",
