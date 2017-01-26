@@ -12,7 +12,8 @@
 	<source path="Source" />
 
 	<haxelib name="openfl" />
-  <haxelib name="stats" />
+  <haxelib name="statistics" />
+  <haxelib name="trace-timer" />
 	<haxelib name="zip" />
   <haxelib name="multiloader" />
 

@@ -30,6 +30,8 @@
   <haxelib>
     <library name="zip" />
     <library name="multiloader" />
+    <library name="trace-timer" />
+    <library name="statistics" />
   </haxelib>
   <!-- Class files to compile (other referenced classes will automatically be included) -->
   <compileTargets>

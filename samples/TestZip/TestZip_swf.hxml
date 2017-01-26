@@ -1,4 +1,6 @@
 -lib zip
+-lib statistics
+-lib trace-timer
 -lib multiloader
 -cp Source
 -swf Server/TestZip.swf
