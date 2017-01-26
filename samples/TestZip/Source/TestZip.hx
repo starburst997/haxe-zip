@@ -1,9 +1,11 @@
 package;
 
 import haxe.ds.StringMap;
+
 import multiloader.MultiLoader;
+
 import statistics.Stats;
-import trace.TraceTimer;
+import statistics.TraceTimer;
 
 import zip.Zip;
 import zip.ZipEntry;
