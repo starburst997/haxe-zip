@@ -29,7 +29,7 @@
   <!-- haxelib libraries -->
   <haxelib>
     <library name="zip" />
-    <library name="multiloader" />
+    <library name="file-load" />
     <library name="trace-timer" />
     <library name="statistics" />
   </haxelib>

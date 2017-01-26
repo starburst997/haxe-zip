@@ -2,7 +2,7 @@ package;
 
 import haxe.ds.StringMap;
 
-import multiloader.MultiLoader;
+import file.load.FileLoad;
 
 import statistics.Stats;
 import statistics.TraceTimer;
@@ -50,7 +50,7 @@ class TestZip
   // Simply load a URL and do nothing else
   function loadURL1()
   {
-    MultiLoader.loadBytes(
+    FileLoad.loadBytes(
     {
       url: TEST1,
       complete: function(bytes)

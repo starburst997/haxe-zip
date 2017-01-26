@@ -1,7 +1,7 @@
 -lib zip
 -lib trace-timer
 -lib statistics
--lib multiloader
+-lib file-load
 -cp Source
 -js Server/js/TestZip.js
 -main Main

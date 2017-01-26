@@ -14,8 +14,8 @@
 	<haxelib name="openfl" />
   <haxelib name="statistics" />
   <haxelib name="trace-timer" />
-	<haxelib name="zip" />
-  <haxelib name="multiloader" />
+  <haxelib name="file-load" />
+  <haxelib name="zip" />
 
 	<assets path="Assets" rename="assets" />
 

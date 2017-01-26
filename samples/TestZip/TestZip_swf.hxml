@@ -1,7 +1,7 @@
 -lib zip
 -lib statistics
 -lib trace-timer
--lib multiloader
+-lib file-load
 -cp Source
 -swf Server/TestZip.swf
 -swf-header 800:600:60:FFFFFF
