@@ -1,11 +1,16 @@
 # haxe-zip
-Library to provide a streaming Zip Reader experience and fix some issue (JS / SWF uncompress).
+Library to provide a streaming Zip Reader experience and fix some issue (JS / SWF incompatibilities).
 
 Mainly took zip.Reader class from haxe and did some modification.
+
+Also took DeflateStream from [PNGEncoder2](https://github.com/cameron314/PNGEncoder2/) and removed flash specific code to add compress support on platform that did not have it natively.
+
+I wanted a pure haxe Zip class without any 3rd party (mainly for JS).
 
 I'll write better example
 
 ```haxe
+// Uncompress example:
 var entries = new StringMap<ZipEntry>();
 
 var zip = new Zip(bytes);

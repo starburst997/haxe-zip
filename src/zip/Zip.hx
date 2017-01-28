@@ -25,9 +25,14 @@ import haxe.io.BufferInput;
 import haxe.io.Bytes;
 import haxe.io.BytesInput;
 import haxe.io.Input;
+import haxe.zip.Compress;
 import haxe.zip.InflateImpl;
 
 import zip.ZipEntry;
+
+#if openfl
+import lime.utils.compress.Deflate;
+#end
 
 /**
  * Taken from the haxe.zip.Reader class
@@ -48,7 +53,60 @@ class Zip
     this.i = new BytesInput(bytes);
     this.bytes = bytes;
   }
+  
+  public static function saveZip( entries:Array<ZipEntry> )
+  {
+    
+  }
 
+  // How come there is no official implementation of Deflate in haxe???
+  public static function compress(bytes:Bytes)
+  {
+    #if openfl
+    return Deflate.compress(bytes);
+    
+    #elseif (cpp || neko)
+    return Compress.run(bytes, 9);
+    
+    #elseif flash
+    var data = bytes.getData();
+    data.deflate();
+    return Bytes.ofData(data);
+    
+    /*var byteArray = cast bytes.getData ();
+		
+		var data = new ByteArray ();
+		data.writeBytes(byteArray);
+		data.deflate();
+		
+		return Bytes.ofData (data);*/
+    #else
+    
+    // Pure Haxe, should work everywhere
+    var deflateStream = DeflateStream.create(FAST);
+    
+    deflateStream.write(new BytesInput(bytes));
+    //deflateStream.fastWrite(0, 32);
+    
+    return deflateStream.finalize();
+    
+    #end
+    
+    /*#elseif neko
+		return neko.zip.Compress.run(b,9);
+		#elseif flash9
+		var bytes = b.sub(0,b.length);
+		var data = bytes.getData();
+		data.compress();
+		return haxe.io.Bytes.ofData(data);
+		#elseif cpp
+		return cpp.zip.Compress.run(b,9);
+		#else
+		throw "Deflate is not supported on this platform";
+		return null;
+		#end*/
+  }
+  
   function readZipDate()
   {
     var t = i.readUInt16();
@@ -289,8 +347,23 @@ class Zip
   {
     //trace("Compressed Data!!!!!");
 
-    // For some weird reason, JS does not like the standard way
-    #if (js || flash)
+    #if (cpp || neko)
+    var b = f.input.read(f.dataSize);
+    var c = new haxe.zip.Uncompress(-15);
+    var s = haxe.io.Bytes.alloc(f.fileSize);
+    var r = c.execute(b,0,s,0);
+    c.close();
+    if ( !r.done || r.read != b.length || r.write != f.fileSize )
+      throw "Invalid compressed data for "+f.fileName;
+
+    // Don't save, assume we're gonna cache that value
+    /*f.compressed = false;
+    f.dataSize = f.fileSize;
+    f.data = s;*/
+
+    return s;
+    
+    #else
     var bufSize = 65536;
     if ( tmp == null )
       tmp = haxe.io.Bytes.alloc(bufSize);
@@ -309,26 +382,31 @@ class Zip
     f.data = out.getBytes();*/
 
     return out.getBytes();
-
-    // "Standard" Way... (probably faster and call native function)
-    #else
-    var b = f.input.read(f.dataSize);
-    var c = new haxe.zip.Uncompress(-15);
-    var s = haxe.io.Bytes.alloc(f.fileSize);
-    var r = c.execute(b,0,s,0);
-    c.close();
-    if ( !r.done || r.read != b.length || r.write != f.fileSize )
-      throw "Invalid compressed data for "+f.fileName;
-
-    // Don't save, assume we're gonna cache that value
-    /*f.compressed = false;
-    f.dataSize = f.fileSize;
-    f.data = s;*/
-
-    return s;
     #end
   }
 
+  public static function rawUncompress(bytes:Bytes):Bytes
+  {
+    var bufSize = 65536;
+    if ( tmp == null )
+      tmp = haxe.io.Bytes.alloc(bufSize);
+    var out = new haxe.io.BytesBuffer();
+    var z = new InflateImpl(new BytesInput(bytes), false, false);
+    while ( true )
+    {
+      var n = z.readBytes(tmp, 0, bufSize);
+      out.addBytes(tmp, 0, n);
+      if ( n < bufSize )
+        break;
+    }
+
+    // Don't save, assume we're gonna cache that value
+    /*f.compressed = false;
+    f.data = out.getBytes();*/
+
+    return out.getBytes();
+  }
+  
   // Clean zip entry
   public static function cleanZip( f:ZipEntry )
   {

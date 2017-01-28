@@ -10,10 +10,13 @@ import statistics.TraceTimer;
 import zip.Zip;
 import zip.ZipEntry;
 
+import haxe.io.Bytes;
+
 // Tests
 enum Tests
 {
   LoadURL1;
+  Save1;
 }
 
 /**
@@ -39,14 +42,30 @@ class TestZip
 
     trace("TestZip Launch");
 
-    var test = LoadURL1;
+    var test = Save1;
 
     switch(test)
     {
       case LoadURL1: loadURL1();
+      case Save1: save1();
     }
   }
 
+  // Simple Zip Write test
+  function save1()
+  {
+    trace("Save test!");
+    
+    var data = Bytes.ofString("Atest!!!! GZIugiuGHZiuHZIuhz Allo thtest!!!! Allo thtest!!!! Allo thllo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!!Atest!!!! GZIugiuGHZiuHZIuhz Allo thtest!!!! Allo thtest!!!! Allo thllo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!!Atest!!!! GZIugiuGHZiuHZIuhz Allo thtest!!!! Allo thtest!!!! Allo thllo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!!Atest!!!! GZIugiuGHZiuHZIuhz Allo thtest!!!! Allo thtest!!!! Allo thllo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!!Atest!!!! GZIugiuGHZiuHZIuhz Allo thtest!!!! Allo thtest!!!! Allo thllo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!!Atest!!!! GZIugiuGHZiuHZIuhz Allo thtest!!!! Allo thtest!!!! Allo thllo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!!Atest!!!! GZIugiuGHZiuHZIuhz Allo thtest!!!! Allo thtest!!!! Allo thllo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!!Atest!!!! GZIugiuGHZiuHZIuhz Allo thtest!!!! Allo thtest!!!! Allo thllo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!!Atest!!!! GZIugiuGHZiuHZIuhz Allo thtest!!!! Allo thtest!!!! Allo thllo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!!Atest!!!! GZIugiuGHZiuHZIuhz Allo thtest!!!! Allo thtest!!!! Allo thllo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!!Atest!!!! GZIugiuGHZiuHZIuhz Allo thtest!!!! Allo thtest!!!! Allo thllo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!!Atest!!!! GZIugiuGHZiuHZIuhz Allo thtest!!!! Allo thtest!!!! Allo thllo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!!Atest!!!! GZIugiuGHZiuHZIuhz Allo thtest!!!! Allo thtest!!!! Allo thllo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!!Atest!!!! GZIugiuGHZiuHZIuhz Allo thtest!!!! Allo thtest!!!! Allo thllo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!!");
+    var compressed = Zip.compress( data );
+    
+    trace("HEY", data.length, compressed.length, compressed);
+    
+    var uncompressed = Zip.rawUncompress(compressed);
+    
+    trace("Yo", uncompressed.length, uncompressed);
+  }
+  
   // Simply load a URL and do nothing else
   function loadURL1()
   {

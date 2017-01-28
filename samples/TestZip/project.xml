@@ -15,6 +15,7 @@
   <haxelib name="statistics" />
   <haxelib name="trace-timer" />
   <haxelib name="file-load" />
+  <haxelib name="file-save" />
   <haxelib name="zip" />
 
 	<assets path="Assets" rename="assets" />

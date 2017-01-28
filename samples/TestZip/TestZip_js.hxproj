@@ -30,6 +30,7 @@
   <haxelib>
     <library name="zip" />
     <library name="file-load" />
+    <library name="file-save" />
     <library name="trace-timer" />
     <library name="statistics" />
   </haxelib>
