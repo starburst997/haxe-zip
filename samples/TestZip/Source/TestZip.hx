@@ -1,5 +1,6 @@
 package;
 
+import haxe.Timer;
 import haxe.ds.StringMap;
 
 import file.load.FileLoad;
@@ -63,17 +64,30 @@ class TestZip
     
     trace("Yo", compressed.length, uncompressed.length, uncompressed);
     
+    // Benchmark
+    /*var timer = new Timer(Std.int((1 / 60) * 1000)); // 60 FPS
+    timer.run = function()
+    {
+      trace("");
+      compressed = Zip.rawCompress( data );
+      trace("Compress Time");
+    };*/
     
-    trace("Compress Time");
+    trace("");
     compressed = Zip.rawCompress( data );
     trace("Compress Time");
+    
+    trace("");
     compressed = Zip.rawCompress( data );
     trace("Compress Time");
+    
+    trace("");
     compressed = Zip.rawCompress( data );
     trace("Compress Time");
+    
+    trace("");
     compressed = Zip.rawCompress( data );
     trace("Compress Time");
-    compressed = Zip.rawCompress( data );
   }
   
   // Simply load a URL and do nothing else

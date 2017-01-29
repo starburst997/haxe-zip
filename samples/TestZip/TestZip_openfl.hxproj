@@ -5,7 +5,7 @@
     <movie outputType="CustomBuild" />
     <movie input="" />
     <movie path="project.xml" />
-    <movie fps="30" />
+    <movie fps="61" />
     <movie width="800" />
     <movie height="600" />
     <movie version="1" />
@@ -18,22 +18,26 @@
   <classpaths>
     <class path="C:\HaxeToolkit\haxe\lib\openfl\4,5,2" />
     <class path="C:\HaxeToolkit\haxe\lib\lime\3,5,2" />
-    <class path="C:\Users\Starburst\Projects\haxe-stats\src" />
+    <class path="C:\Users\Starburst\Projects\haxe-statistics\src" />
+    <class path="C:\HaxeToolkit\haxe\lib\perf,js\1,1,8\src" />
+    <class path="C:\Users\Starburst\Projects\haxe-trace-timer\src" />
+    <class path="C:\Users\Starburst\Projects\haxe-file-load\src" />
+    <class path="C:\Users\Starburst\Projects\haxe-file-save\src" />
     <class path="C:\Users\Starburst\Projects\haxe-zip\src" />
-    <class path="C:\Users\Starburst\Projects\Haxe-MultiLoader\src" />
     <class path="Source" />
+    <class path="C:\HaxeToolkit\haxe\lib\openfl\4,5,2\externs\core\flash" />
     <class path="C:\HaxeToolkit\haxe\lib\openfl\4,5,2\externs\core\openfl" />
     <class path="C:\HaxeToolkit\haxe\lib\openfl\4,5,2\externs\extras" />
-    <class path="Export\html5\release\haxe" />
+    <class path="Export\flash\release\haxe" />
   </classpaths>
   <!-- Build options -->
   <build>
-    <option directives="openfl=4.5.2&#xA;lime=3.5.2&#xA;stats=1.0.0&#xA;zip=0.0.1&#xA;multiloader=1.0.0&#xA;tools=3.5.2&#xA;howlerjs&#xA;no-compilation&#xA;openfl-html5&#xA;lime-html5&#xA;html5&#xA;web&#xA;html5&#xA;display" />
+    <option directives="openfl=4.5.2&#xA;lime=3.5.2&#xA;statistics=1.0.0&#xA;perf.js=1.1.8&#xA;trace-timer=2.0.0&#xA;file-load=0.0.1&#xA;file-save=0.0.1&#xA;zip=0.0.1&#xA;tools=3.5.2&#xA;no-compilation&#xA;openfl-flash&#xA;NORMAL_ONLY&#xA;web&#xA;display" />
     <option flashStrict="False" />
     <option noInlineOnDebug="False" />
     <option mainClass="ApplicationMain" />
     <option enabledebug="False" />
-    <option additional="--macro openfl._internal.utils.ExtraParams.include()&#xA;--macro lime.Lib.extraParams()&#xA;--remap flash:openfl" />
+    <option additional="--macro openfl._internal.utils.ExtraParams.include()&#xA;--macro lime.Lib.extraParams()&#xA;--macro Macro.init()&#xA;-swf-version 11.2" />
   </build>
   <!-- haxelib libraries -->
   <haxelib>

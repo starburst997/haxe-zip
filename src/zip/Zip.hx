@@ -80,9 +80,15 @@ class Zip
 		data.deflate();
 		
 		return Bytes.ofData (data);*/
+    #elseif js
+    
+    // Haxe Deflate is currently unoptimized, use pako instead
+    var data = untyped __js__("pako.deflateRaw")(bytes.getData());
+    return Bytes.ofData(data);
+    
     #else
     
-    // Pure Haxe, should work everywhere
+    // Pure Haxe, should work everywhere else (VERY UNOPTIMIZED!!!)
     var deflateStream = DeflateStream.create(NORMAL);
     deflateStream.write(new BytesInput(bytes));
     
