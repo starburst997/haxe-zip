@@ -3,6 +3,7 @@
 -lib statistics
 -lib file-load
 -lib file-save
+-D NORMAL_ONLY
 -cp Source
 -js Server/js/TestZip.js
 -main Main

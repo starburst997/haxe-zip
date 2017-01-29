@@ -5,6 +5,8 @@ Mainly took zip.Reader class from haxe and did some modification.
 
 Also took DeflateStream from [PNGEncoder2](https://github.com/cameron314/PNGEncoder2/) and removed flash specific code to add compress support on platform that did not have it natively.
 
+Not sure how well it's perform tho
+
 I wanted a pure haxe Zip class without any 3rd party (mainly for JS).
 
 I'll write better example

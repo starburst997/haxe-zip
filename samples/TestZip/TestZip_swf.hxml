@@ -3,6 +3,7 @@
 -lib trace-timer
 -lib file-load
 -lib file-save
+-D NORMAL_ONLY
 -cp Source
 -swf Server/TestZip.swf
 -swf-header 800:600:60:FFFFFF

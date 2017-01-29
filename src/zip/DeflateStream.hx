@@ -1,6 +1,8 @@
 /*
   
    Jan. 2017 - Removed flash specific code - Jean-Denis Boivin
+   Need to do some benchmarks
+   FAST compression doesn't works?
   
    Copyright (c) 2011, Cameron Desrochers
    All rights reserved.
@@ -1703,7 +1705,15 @@ class DeflateStream
 		//src.readBytes(ApplicationDomain.currentDomain.domainMemory, offset, length);
     
     // Haxe
+    length = length == 0 ? src.length : length;
     src.readBytes(Memory.memory, offset, length);
+    
+    trace("memcpy", offset, length);
+    
+    /*for ( i in offset...(offset+length) )
+    {
+      trace("a", i + ":", Memory.memory.get(i));
+    }*/
     
     //Memory.memory.blit(offset, src, 0, length);
 	}

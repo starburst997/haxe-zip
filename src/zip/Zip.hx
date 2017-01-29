@@ -60,7 +60,7 @@ class Zip
   }
 
   // How come there is no official implementation of Deflate in haxe???
-  public static function compress(bytes:Bytes)
+  public static function rawCompress(bytes:Bytes)
   {
     #if openfl
     return Deflate.compress(bytes);
@@ -83,10 +83,8 @@ class Zip
     #else
     
     // Pure Haxe, should work everywhere
-    var deflateStream = DeflateStream.create(FAST);
-    
+    var deflateStream = DeflateStream.create(NORMAL);
     deflateStream.write(new BytesInput(bytes));
-    //deflateStream.fastWrite(0, 32);
     
     return deflateStream.finalize();
     

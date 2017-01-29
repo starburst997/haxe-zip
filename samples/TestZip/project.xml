@@ -18,6 +18,8 @@
   <haxelib name="file-save" />
   <haxelib name="zip" />
 
+  <haxedef name="NORMAL_ONLY" />
+
 	<assets path="Assets" rename="assets" />
 
   <config:ios deployment="6.0" />
