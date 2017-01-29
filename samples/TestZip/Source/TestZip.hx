@@ -62,6 +62,18 @@ class TestZip
     var uncompressed = Zip.rawUncompress(compressed);
     
     trace("Yo", compressed.length, uncompressed.length, uncompressed);
+    
+    
+    trace("Compress Time");
+    compressed = Zip.rawCompress( data );
+    trace("Compress Time");
+    compressed = Zip.rawCompress( data );
+    trace("Compress Time");
+    compressed = Zip.rawCompress( data );
+    trace("Compress Time");
+    compressed = Zip.rawCompress( data );
+    trace("Compress Time");
+    compressed = Zip.rawCompress( data );
   }
   
   // Simply load a URL and do nothing else

@@ -274,7 +274,7 @@ class DeflateStream
 	// TODO: Add compression ratio (keep track of bits written vs. bits seen)
 	
   // Haxe
-	public static var memory:Bytes;
+	public static var memory:Bytes = null;
   
 	// Returns a new deflate stream (assumes no other code uses flash.Memory for
 	// the duration of the lifetime of the stream). No manual memory management
@@ -287,8 +287,10 @@ class DeflateStream
 		Memory.select(mem);*/
 		
     // Haxe
-    trace("Memory length:", SCRATCH_MEMORY_SIZE);
-    memory = Bytes.alloc(SCRATCH_MEMORY_SIZE); // ApplicationDomain.MIN_DOMAIN_MEMORY_LENGTH ?
+    //trace("Memory length:", SCRATCH_MEMORY_SIZE);
+    
+    if ( memory == null ) memory = Bytes.alloc(SCRATCH_MEMORY_SIZE); // ApplicationDomain.MIN_DOMAIN_MEMORY_LENGTH ?
+    
     Memory.select(memory);
     
 		return createEx(level, 0, SCRATCH_MEMORY_SIZE, writeZLIBInfo);
@@ -324,7 +326,7 @@ class DeflateStream
   inline function growMemory(length:Int, id:Int = 0)
   {
     if (Memory.memory.length < length) {
-      trace(id, "WARNING THIS SHOULD NOT BE CALLED OFTEN!!!!");
+      //trace(id, "WARNING THIS SHOULD NOT BE CALLED OFTEN!!!!");
       
       var isMemory = Memory.memory == memory;
       
@@ -410,6 +412,8 @@ class DeflateStream
 			mem.length = end;
 			Memory.select(mem);
 		}*/
+    
+    //trace("!!!", currentAddr);
     
     // Haxe
     var uend : UInt = end;
@@ -1708,7 +1712,7 @@ class DeflateStream
     length = length == 0 ? src.length : length;
     src.readBytes(Memory.memory, offset, length);
     
-    trace("memcpy", offset, length);
+    //trace("memcpy", offset, length);
     
     /*for ( i in offset...(offset+length) )
     {
