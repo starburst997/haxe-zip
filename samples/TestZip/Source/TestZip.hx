@@ -43,7 +43,7 @@ class TestZip
 
     trace("TestZip Launch");
 
-    var test = Save1;
+    var test = LoadURL1;
 
     switch(test)
     {
@@ -123,6 +123,13 @@ class TestZip
 
         trace("Bytes", myBytes.length);
         trace("Text", myText);
+        
+        // Benchmark
+        trace("");
+        trace("TEST", Zip.getBytes(entries.get("sheets.xml")).length);
+        trace("TEST", Zip.getBytes(entries.get("sheets.xml")).length);
+        trace("TEST", Zip.getBytes(entries.get("sheets.xml")).length);
+        trace("TEST", Zip.getBytes(entries.get("sheets.xml")).length);
       },
       error: function(error)
       {

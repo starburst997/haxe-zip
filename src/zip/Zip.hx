@@ -73,42 +73,18 @@ class Zip
     data.deflate();
     return Bytes.ofData(data);
     
-    /*var byteArray = cast bytes.getData ();
-		
-		var data = new ByteArray ();
-		data.writeBytes(byteArray);
-		data.deflate();
-		
-		return Bytes.ofData (data);*/
     #elseif js
-    
     // Haxe Deflate is currently unoptimized, use pako instead
     var data = untyped __js__("pako.deflateRaw")(bytes.getData());
     return Bytes.ofData(data);
     
     #else
-    
     // Pure Haxe, should work everywhere else (VERY UNOPTIMIZED!!!)
     var deflateStream = DeflateStream.create(NORMAL);
     deflateStream.write(new BytesInput(bytes));
     
     return deflateStream.finalize();
-    
     #end
-    
-    /*#elseif neko
-		return neko.zip.Compress.run(b,9);
-		#elseif flash9
-		var bytes = b.sub(0,b.length);
-		var data = bytes.getData();
-		data.compress();
-		return haxe.io.Bytes.ofData(data);
-		#elseif cpp
-		return cpp.zip.Compress.run(b,9);
-		#else
-		throw "Deflate is not supported on this platform";
-		return null;
-		#end*/
   }
   
   function readZipDate()
@@ -350,7 +326,11 @@ class Zip
   public static inline function uncompress( f:ZipEntry )
   {
     //trace("Compressed Data!!!!!");
-
+    
+    // TODO: Check to use OpenFL decompress??
+    // Seems fast enough? Will need some benchmark to makes sure!
+    // But results indicate quite a good speed...
+    
     #if (cpp || neko)
     var b = f.input.read(f.dataSize);
     var c = new haxe.zip.Uncompress(-15);
@@ -368,34 +348,28 @@ class Zip
     return s;
     
     #else
-    var bufSize = 65536;
-    if ( tmp == null )
-      tmp = haxe.io.Bytes.alloc(bufSize);
-    var out = new haxe.io.BytesBuffer();
-    var z = new InflateImpl(f.input, false, false);
-    while ( true )
-    {
-      var n = z.readBytes(tmp, 0, bufSize);
-      out.addBytes(tmp, 0, n);
-      if ( n < bufSize )
-        break;
-    }
-
     // Don't save, assume we're gonna cache that value
     /*f.compressed = false;
     f.data = out.getBytes();*/
-
-    return out.getBytes();
+    
+    return rawUncompress_input(f.input);
     #end
   }
 
   public static function rawUncompress(bytes:Bytes):Bytes
   {
+    return rawUncompress_input(new BytesInput(bytes));
+  }
+  
+  public static function rawUncompress_input(input:BytesInput):Bytes
+  {
+    var p = input.position;
+    
     var bufSize = 65536;
     if ( tmp == null )
       tmp = haxe.io.Bytes.alloc(bufSize);
     var out = new haxe.io.BytesBuffer();
-    var z = new InflateImpl(new BytesInput(bytes), false, false);
+    var z = new InflateImpl(input, false, false);
     while ( true )
     {
       var n = z.readBytes(tmp, 0, bufSize);
@@ -403,11 +377,9 @@ class Zip
       if ( n < bufSize )
         break;
     }
-
-    // Don't save, assume we're gonna cache that value
-    /*f.compressed = false;
-    f.data = out.getBytes();*/
-
+    
+    input.position = p;
+    
     return out.getBytes();
   }
   
