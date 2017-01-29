@@ -43,7 +43,7 @@ class TestZip
 
     trace("TestZip Launch");
 
-    var test = LoadURL1;
+    var test = Save1;
 
     switch(test)
     {
@@ -126,10 +126,16 @@ class TestZip
         
         // Benchmark
         trace("");
-        trace("TEST", Zip.getBytes(entries.get("sheets.xml")).length);
-        trace("TEST", Zip.getBytes(entries.get("sheets.xml")).length);
-        trace("TEST", Zip.getBytes(entries.get("sheets.xml")).length);
-        trace("TEST", Zip.getBytes(entries.get("sheets.xml")).length);
+        trace("TEST", Zip.getBytes(entries.get("sheets/159288dc66df51f.xml")).length);
+        trace("TEST", Zip.getBytes(entries.get("sheets/159288dc66df51f.xml")).length);
+        trace("TEST", Zip.getBytes(entries.get("sheets/159288dc66df51f.xml")).length);
+        trace("TEST", Zip.getBytes(entries.get("sheets/159288dc66df51f.xml")).length);
+        trace("TEST", Zip.getBytes(entries.get("sheets/159288dc66df51f.xml")).length);
+        trace("TEST", Zip.getBytes(entries.get("sheets/159288dc66df51f.xml")).length);
+        trace("TEST", Zip.getBytes(entries.get("sheets/159288dc66df51f.xml")).length);
+        trace("TEST", Zip.getBytes(entries.get("sheets/159288dc66df51f.xml")).length);
+        trace("TEST", Zip.getBytes(entries.get("sheets/159288dc66df51f.xml")).length);
+        trace("TEST", Zip.getBytes(entries.get("sheets/159288dc66df51f.xml")).length);
       },
       error: function(error)
       {

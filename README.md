@@ -5,9 +5,13 @@ Mainly took zip.Reader class from haxe and did some modification.
 
 Also took DeflateStream from [PNGEncoder2](https://github.com/cameron314/PNGEncoder2/) and removed flash specific code to add compress support on platform that did not have it natively.
 
-Not sure how well it's perform tho
+Use pako.js for JS target
 
-I wanted a pure haxe Zip class without any 3rd party (mainly for JS).
+On flash, use deflate / inflate from ByteArray
+
+If OpenFL is detected then we use lime functions for Compress / Decompress
+
+Pretty much every targets should be compatible with this library although I only tested SWF / JS / OpenFL
 
 I'll write better example
 

@@ -325,13 +325,11 @@ class Zip
   // Get uncompressed bytes
   public static inline function uncompress( f:ZipEntry )
   {
-    //trace("Compressed Data!!!!!");
+    #if (openfl || js || flash)
+    var b = f.input.read(f.dataSize);
+    return rawUncompress(b);
     
-    // TODO: Check to use OpenFL decompress??
-    // Seems fast enough? Will need some benchmark to makes sure!
-    // But results indicate quite a good speed...
-    
-    #if (cpp || neko)
+    #elseif (cpp || neko)
     var b = f.input.read(f.dataSize);
     var c = new haxe.zip.Uncompress(-15);
     var s = haxe.io.Bytes.alloc(f.fileSize);
@@ -339,29 +337,38 @@ class Zip
     c.close();
     if ( !r.done || r.read != b.length || r.write != f.fileSize )
       throw "Invalid compressed data for "+f.fileName;
-
-    // Don't save, assume we're gonna cache that value
-    /*f.compressed = false;
-    f.dataSize = f.fileSize;
-    f.data = s;*/
-
     return s;
     
     #else
-    // Don't save, assume we're gonna cache that value
-    /*f.compressed = false;
-    f.data = out.getBytes();*/
     
     return rawUncompress_input(f.input);
     #end
+    
+    // Don't save, assume we're gonna cache that value
+    /*f.compressed = false;
+    f.data = out.getBytes();*/
   }
 
-  public static function rawUncompress(bytes:Bytes):Bytes
+  public static inline function rawUncompress(bytes:Bytes):Bytes
   {
+    #if openfl
+    return Deflate.decompress(bytes);
+    
+    #elseif flash
+    var data = bytes.getData();
+    data.inflate();
+    return Bytes.ofData(data);
+    
+    #elseif js
+    var data = untyped __js__("pako.inflateRaw")(bytes.getData());
+    return Bytes.ofData(data);
+    
+    #else
     return rawUncompress_input(new BytesInput(bytes));
+    #end
   }
   
-  public static function rawUncompress_input(input:BytesInput):Bytes
+  public static inline function rawUncompress_input(input:BytesInput):Bytes
   {
     var p = input.position;
     
