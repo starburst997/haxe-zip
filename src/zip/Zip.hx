@@ -24,7 +24,6 @@ package zip;
 import haxe.io.BufferInput;
 import haxe.io.Bytes;
 import haxe.io.BytesInput;
-import haxe.io.Input;
 import haxe.zip.Compress;
 import haxe.zip.InflateImpl;
 
@@ -42,241 +41,13 @@ import lime.utils.compress.Deflate;
  */
 class Zip
 {
-  public var bytes:Bytes;
-  public var i:BytesInput;
-
-  private static var buf:BufferInput;
-  private static var tmp:Bytes;
-
-  public function new(bytes:Bytes)
-  {
-    this.i = new BytesInput(bytes);
-    this.bytes = bytes;
-  }
+  public static var buf:BufferInput;
+  public static var tmp:Bytes;
   
-  public static function saveZip( entries:Array<ZipEntry> )
-  {
-    
-  }
-
-  // How come there is no official implementation of Deflate in haxe???
-  public static function rawCompress(bytes:Bytes)
-  {
-    #if openfl
-    return Deflate.compress(bytes);
-    
-    #elseif (cpp || neko)
-    return Compress.run(bytes, 9);
-    
-    #elseif flash
-    var data = bytes.getData();
-    data.deflate();
-    return Bytes.ofData(data);
-    
-    #elseif js
-    // Haxe Deflate is currently unoptimized, use pako instead
-    var data = untyped __js__("pako.deflateRaw")(bytes.getData());
-    return Bytes.ofData(data);
-    
-    #else
-    // Pure Haxe, should work everywhere else (VERY UNOPTIMIZED!!!)
-    var deflateStream = DeflateStream.create(NORMAL);
-    deflateStream.write(new BytesInput(bytes));
-    
-    return deflateStream.finalize();
-    #end
-  }
+  // No need to instantiate
+  private function new() { }
   
-  function readZipDate()
-  {
-    var t = i.readUInt16();
-    var hour = (t >> 11) & 31;
-    var min = (t >> 5) & 63;
-    var sec = t & 31;
-    var d = i.readUInt16();
-    var year = d >> 9;
-    var month = (d >> 5) & 15;
-    var day = d & 31;
-    return new Date(year + 1980, month-1, day, hour, min, sec << 1);
-  }
-
-  function readExtraFields(length)
-  {
-    var fields = new List();
-    while ( length > 0 )
-    {
-      if ( length < 4 ) throw "Invalid extra fields data";
-      var tag = i.readUInt16();
-      var len = i.readUInt16();
-      if ( length < len ) throw "Invalid extra fields data";
-      switch ( tag )
-      {
-        case 0x7075:
-          var version = i.readByte();
-          if ( version != 1 )
-          {
-            var data = new haxe.io.BytesBuffer();
-            data.addByte(version);
-            data.add(i.read(len-1));
-            fields.add(FUnknown(tag,data.getBytes()));
-          }
-          else
-          {
-            var crc = i.readInt32();
-            var name = i.read(len - 5).toString();
-            fields.add(FInfoZipUnicodePath(name,crc));
-          }
-        default:
-          fields.add(FUnknown(tag,i.read(len)));
-      }
-      length -= 4 + len;
-    }
-    return fields;
-  }
-
-  public function readEntryHeader() : ZipEntry
-  {
-    var i = this.i;
-    var h = i.readInt32();
-    if ( h == 0x02014B50 || h == 0x06054B50 )
-      return null;
-    if ( h != 0x04034B50 )
-      throw "Invalid Zip Data";
-    var version = i.readUInt16();
-    var flags = i.readUInt16();
-    var utf8 = flags & 0x800 != 0;
-    if ( (flags & 0xF7F1) != 0 )
-      throw "Unsupported flags "+flags;
-    var compression = i.readUInt16();
-    var compressed = (compression != 0);
-    if ( compressed && compression != 8 )
-      throw "Unsupported compression "+compression;
-    var mtime = readZipDate();
-    var crc32 : Null<Int> = i.readInt32();
-    var csize = i.readInt32();
-    var usize = i.readInt32();
-    var fnamelen = i.readInt16();
-    var elen = i.readInt16();
-    var fname = i.readString(fnamelen);
-    var fields = readExtraFields(elen);
-    if ( utf8 )
-      fields.push(FUtf8);
-    var data = null;
-    // we have a data descriptor that store the real crc/sizes
-    // after the compressed data, let's wait for it
-    if ( (flags & 8) != 0 )
-      crc32 = null;
-
-    var e:ZipEntry = {
-      fileName : fname,
-      fileSize : usize,
-      fileTime : mtime,
-      input : i,
-      position : i.position,
-      compressed : compressed,
-      dataSize : csize,
-      data : data,
-      crc32 : crc32,
-      extraFields : fields,
-    };
-
-    // Data is null, but we need to move position
-    // Or if crc32 is null, then read data
-    if ( e.crc32 == null )
-    {
-      if ( e.compressed )
-      {
-        #if neko
-        // enter progressive mode : we use a different input which has
-        // a temporary buffer, this is necessary since we have to uncompress
-        // progressively, and after that we might have pending read data
-        // that needs to be processed
-        var bufSize = 65536;
-        if ( buf == null )
-        {
-          buf = new haxe.io.BufferInput(i, haxe.io.Bytes.alloc(bufSize));
-          tmp = haxe.io.Bytes.alloc(bufSize);
-          i = buf;
-        }
-        var out = new haxe.io.BytesBuffer();
-        var z = new neko.zip.Uncompress(-15);
-        z.setFlushMode(neko.zip.Flush.SYNC);
-        while ( true )
-        {
-          if ( buf.available == 0 )
-            buf.refill();
-          var p = bufSize - buf.available;
-          if ( p != buf.pos )
-          {
-            // because of lack of "srcLen" in zip api, we need to always be stuck to the buffer end
-            buf.buf.blit(p, buf.buf, buf.pos, buf.available);
-            buf.pos = p;
-          }
-          var r = z.execute(buf.buf, buf.pos, tmp, 0);
-          out.addBytes(tmp, 0, r.write);
-          buf.pos += r.read;
-          buf.available -= r.read;
-          if ( r.done ) break;
-        }
-        e.data = out.getBytes();
-        #else
-        var bufSize = 65536;
-        if ( tmp == null )
-          tmp = haxe.io.Bytes.alloc(bufSize);
-        var out = new haxe.io.BytesBuffer();
-        var z = new InflateImpl(i, false, false);
-        while ( true )
-        {
-          var n = z.readBytes(tmp, 0, bufSize);
-          out.addBytes(tmp, 0, n);
-          if ( n < bufSize )
-            break;
-        }
-        e.data = out.getBytes();
-        #end
-
-        // This is the only case where we do read the data anyway...
-        // Why would the crc32 be null?
-        //trace("crc32 is null and compressed!");
-      }
-      else
-      {
-        //trace("crc32 is null but uncompressed!");
-        // Keep data null, skip position
-        i.position += e.dataSize;
-        //e.data = i.read(e.dataSize);
-      }
-
-      e.crc32 = i.readInt32();
-      if ( e.crc32 == 0x08074b50 )
-        e.crc32 = i.readInt32();
-      e.dataSize = i.readInt32();
-      e.fileSize = i.readInt32();
-      // set data to uncompressed
-      e.dataSize = e.fileSize;
-      e.compressed = false;
-    }
-    else
-    {
-      //trace("crc32 is not null!");
-      // Keep data null, skip position
-      i.position += e.dataSize;
-    }
-
-    return e;
-  }
-
-  // Clean ZIP
-  public function clean()
-  {
-    /*buf = null;
-    tmp = null;*/
-
-    i = null;
-    bytes = null;
-  }
-
-  // Get Bytes out of Zip Data
+  // Get Bytes out of a Zip Entry
   public static function getBytes( f:ZipEntry )
   {
     if ( f.data == null )
@@ -299,7 +70,7 @@ class Zip
     return f.data;
   }
 
-  // Get a string out of a Zip
+  // Get a string out of a Zip Enry
   public static function getString( f:ZipEntry ):String
   {
     if ( f.data == null )
@@ -322,6 +93,40 @@ class Zip
     }
   }
 
+  // Weird that there is no official implementation of Deflate in haxe???
+  public static inline function rawCompress(bytes:Bytes)
+  {
+    #if openfl
+    return Deflate.compress(bytes);
+    
+    #elseif (cpp || neko)
+    // Is this better than OpenFL CFFI ??? 
+    // Did not test it but I would assume it's not since OpenFL don't use it...
+    return Compress.run(bytes, 9);
+    
+    #elseif flash
+    // Flash Native, maybe DeflateStream using Memory the proper way 
+    // like it was before I change it to make it cross platform would be?
+    var data = bytes.getData();
+    data.deflate();
+    return Bytes.ofData(data);
+    
+    #elseif js
+    // Haxe Deflate is currently unoptimized, use pako instead,
+    // didn't want 3rd party library but it works very well so...
+    var data = untyped __js__("pako.deflateRaw")(bytes.getData());
+    return Bytes.ofData(data);
+    
+    #else
+    // Pure Haxe, should work everywhere else (VERY UNOPTIMIZED!!!)
+    // But allow for step by step compression, could be nice for extremely huge file?
+    var deflateStream = DeflateStream.create(NORMAL);
+    deflateStream.write(new BytesInput(bytes));
+    
+    return deflateStream.finalize();
+    #end
+  }
+  
   // Get uncompressed bytes
   public static inline function uncompress( f:ZipEntry )
   {
@@ -343,10 +148,6 @@ class Zip
     
     return rawUncompress_input(f.input);
     #end
-    
-    // Don't save, assume we're gonna cache that value
-    /*f.compressed = false;
-    f.data = out.getBytes();*/
   }
 
   public static inline function rawUncompress(bytes:Bytes):Bytes
@@ -364,11 +165,12 @@ class Zip
     return Bytes.ofData(data);
     
     #else
-    return rawUncompress_input(new BytesInput(bytes));
+    return rawUncompress_haxe(new BytesInput(bytes));
     #end
   }
   
-  public static inline function rawUncompress_input(input:BytesInput):Bytes
+  // Haxe implementation of inflate, nice fallback but doesn't seems as fast as native function...
+  public static inline function rawUncompress_haxe(input:BytesInput):Bytes
   {
     var p = input.position;
     
@@ -398,5 +200,12 @@ class Zip
     f.fileTime = null;
     f.input = null;
     f.extraFields = null;
+  }
+  
+  // Clean
+  public static function clean()
+  {
+    buf = null;
+    tmp = null;
   }
 }

@@ -4,11 +4,14 @@ import haxe.Timer;
 import haxe.ds.StringMap;
 
 import file.load.FileLoad;
+import file.save.FileSave;
 
 import statistics.Stats;
 import statistics.TraceTimer;
 
 import zip.Zip;
+import zip.ZipReader;
+import zip.ZipWriter;
 import zip.ZipEntry;
 
 import haxe.io.Bytes;
@@ -18,6 +21,8 @@ enum Tests
 {
   LoadURL1;
   Save1;
+  Save2;
+  Compress1;
 }
 
 /**
@@ -43,19 +48,79 @@ class TestZip
 
     trace("TestZip Launch");
 
-    var test = Save1;
+    var test = Save2;
 
     switch(test)
     {
       case LoadURL1: loadURL1();
       case Save1: save1();
+      case Save2: save2();
+      case Compress1: compress1();
     }
   }
-
-  // Simple Zip Write test
+  
+  // Simple Save Zip test
   function save1()
   {
     trace("Save test!");
+    
+    var zip = new ZipWriter();
+    
+    trace("");
+    zip.addString("Allo !!!!!!!!!!!!!! S LJDL SDJLKsljkd slakjdklj jkalsdjkl jlaksDKLJaslkjd lkaskld jasldjlkaskjd s", "allo.txt", true);
+    trace("Added");
+    zip.addString("Allo askjjklasdasjd laksdlasjdlasj dljasldjaskd askldkjasd", "test/allo2.txt", false);
+    trace("Added");
+    
+    FileSave.saveClickBytes(zip.finalize(), "test.zip");
+  }
+
+  // Simple Load a Zip and Save Zip back
+  function save2()
+  {
+    FileLoad.loadBytes(
+    {
+      url: TEST1,
+      complete: function(bytes)
+      {
+        trace("Downloading complete");
+
+        var entries = new StringMap<ZipEntry>();
+
+        var reader = new ZipReader(bytes);
+        var entry:ZipEntry;
+
+        // Read your Entry info (you could progressively read your zip entries X number per frame)
+        while ( (entry = reader.getNextEntry()) != null )
+        {
+          // Do something with your entry
+          entries.set(entry.fileName, entry);
+          
+          trace("Entry", entry.fileName);
+        }
+
+        // Write ZIP
+        var writer = new ZipWriter();
+        for ( entry in entries.iterator() )
+        {
+          trace("");
+          writer.addEntry(entry);
+          trace("Added");
+        }
+        
+        FileSave.saveClickBytes(writer.finalize(), "test2.zip");
+      },
+      error: function(error)
+      {
+        trace("Error", error);
+      }
+    });
+  }
+  
+  // Simple Zip Compress test
+  function compress1()
+  {
+    trace("Compress test!");
     
     var data = Bytes.ofString("Atest!!!! GZIugiuGHZiuHZIuhz Allo thtest!!!! Allo thtest!!!! Allo thllo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!!Atest!!!! GZIugiuGHZiuHZIuhz Allo thtest!!!! Allo thtest!!!! Allo thllo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!!Atest!!!! GZIugiuGHZiuHZIuhz Allo thtest!!!! Allo thtest!!!! Allo thllo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!!Atest!!!! GZIugiuGHZiuHZIuhz Allo thtest!!!! Allo thtest!!!! Allo thllo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!!Atest!!!! GZIugiuGHZiuHZIuhz Allo thtest!!!! Allo thtest!!!! Allo thllo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!!Atest!!!! GZIugiuGHZiuHZIuhz Allo thtest!!!! Allo thtest!!!! Allo thllo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!!Atest!!!! GZIugiuGHZiuHZIuhz Allo thtest!!!! Allo thtest!!!! Allo thllo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!!Atest!!!! GZIugiuGHZiuHZIuhz Allo thtest!!!! Allo thtest!!!! Allo thllo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!!Atest!!!! GZIugiuGHZiuHZIuhz Allo thtest!!!! Allo thtest!!!! Allo thllo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!!Atest!!!! GZIugiuGHZiuHZIuhz Allo thtest!!!! Allo thtest!!!! Allo thllo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!!Atest!!!! GZIugiuGHZiuHZIuhz Allo thtest!!!! Allo thtest!!!! Allo thllo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!!Atest!!!! GZIugiuGHZiuHZIuhz Allo thtest!!!! Allo thtest!!!! Allo thllo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!!Atest!!!! GZIugiuGHZiuHZIuhz Allo thtest!!!! Allo thtest!!!! Allo thllo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!!Atest!!!! GZIugiuGHZiuHZIuhz Allo thtest!!!! Allo thtest!!!! Allo thllo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!! Allo this is a test!!!!");
     var compressed = Zip.rawCompress( data );
@@ -102,11 +167,11 @@ class TestZip
 
         var entries = new StringMap<ZipEntry>();
 
-        var zip = new Zip(bytes);
+        var zip = new ZipReader(bytes);
         var entry:ZipEntry;
 
         // Read your Entry info (you could progressively read your zip entries X number per frame)
-        while ( (entry = zip.readEntryHeader()) != null )
+        while ( (entry = zip.getNextEntry()) != null )
         {
           // Do something with your entry
           entries.set(entry.fileName, entry);
@@ -115,7 +180,7 @@ class TestZip
         }
 
         // You could get a percentage of task done using this
-        var percent = (entry == null) ? 1 : (zip.i.position / zip.i.length);
+        var percent = (entry == null) ? 1 : zip.progress();
 
         // Read your entry, will read the Data on request (support Deflate even on JS target)
         var myBytes = Zip.getBytes(entries.get("sheets.xml"));

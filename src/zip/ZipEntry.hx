@@ -37,6 +37,7 @@ typedef ZipEntry =  {
 	var compressed : Bool;
 	var dataSize : Int;
   var position : Int;
+  var bytes : Bytes;
   var input : BytesInput;
 	var data : Null<Bytes>;
 	var crc32 : Null<Int>;
