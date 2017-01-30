@@ -48,6 +48,7 @@ class ZipWriter extends Writer
   // Add a Bytes Entry
   public function addBytes(bytes:Bytes, name:String, compressed:Bool = true, date:Date = null):Void
   {
+    var crc = haxe.crypto.Crc32.make(bytes);
     var data = compressed ? Zip.rawCompress(bytes) : bytes;
     
     var e:Entry = 
@@ -58,7 +59,7 @@ class ZipWriter extends Writer
       compressed: compressed,
       dataSize: data.length,
       data: data,
-      crc32: haxe.crypto.Crc32.make(bytes)
+      crc32: crc
     };
     
     writeEntryHeader(e);
