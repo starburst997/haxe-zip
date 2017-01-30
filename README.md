@@ -1,5 +1,5 @@
 # haxe-zip
-Library to provide a streaming Zip Writer / Reader experience and fix some issue (JS / SWF incompatibilities).
+Library to provide a cross-platform streaming Zip Writer / Reader experience.
 
 Mainly took haxe.zip.* class from haxe and did some modification.
 
