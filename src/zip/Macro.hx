@@ -1,12 +1,12 @@
-package;
+package zip;
 
 /**
  * Macro for this library
  */
-class Macro 
+class Macro
 {
   // Simply include pako.js
-  public static macro function init():Void 
+  public static macro function init():Void
   {
     #if !display
 
@@ -14,12 +14,12 @@ class Macro
     if ( haxe.macro.Context.defined("js") && !haxe.macro.Context.defined("openfl") )
     {
       //trace("Included file pako");
-      
-      //haxe.macro.Compiler.includeFile("../externs/pako_deflate.min.js");
-      haxe.macro.Compiler.includeFile("../externs/pako.min.js");
+
+      //haxe.macro.Compiler.includeFile("../../externs/pako_deflate.min.js");
+      haxe.macro.Compiler.includeFile("../../externs/pako.min.js");
     }
-    
-    #else 
+
+    #else
     // Do nothing
     #end
   }
