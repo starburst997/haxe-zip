@@ -15,7 +15,7 @@ class Macro
     {
       //trace("Included file pako");
       
-      haxe.macro.Compiler.includeFile("../../externs/pako.min.js");
+      haxe.macro.Compiler.includeFile(haxe.macro.Context.resolvePath("zip/externs/pako.min.js"));
     }
     
     #else

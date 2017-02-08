@@ -4,9 +4,9 @@
   "tags": ["zip", "format", "files"],
   "license" : "MIT",
   "description" : "Library to provide a cross-platform streaming Zip Writer / Reader experience.",
-  "version" : "1.0.2",
+  "version" : "1.1.0",
   "classPath": "src/",
-  "releasenote" : "Edit CRC issue",
+  "releasenote" : "Edit Pako includes issue",
   "contributors" : ["starburst997"],
   "dependencies" : {}
 }
