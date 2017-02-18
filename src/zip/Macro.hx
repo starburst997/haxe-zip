@@ -13,7 +13,7 @@ class Macro
     // Include pako.js (only if we're not using "openfl", since it already included!)
     if ( haxe.macro.Context.defined("js") && !haxe.macro.Context.defined("openfl") )
     {
-      //trace("Included file pako");
+      trace("Included file pako");
       
       haxe.macro.Compiler.includeFile(haxe.macro.Context.resolvePath("zip/externs/pako.min.js"));
     }
