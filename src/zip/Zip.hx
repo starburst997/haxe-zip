@@ -81,7 +81,8 @@ class Zip
     #elseif (cpp || neko)
     // Is this better than OpenFL CFFI ??? 
     // Did not test it but I would assume it's not since OpenFL don't use it...
-    return Compress.run(bytes, 9);
+    var data = Compress.run(bytes, 9);
+    return data.sub(2,data.length-6);
     
     #elseif flash
     // Flash Native, maybe DeflateStream using Memory the proper way 
