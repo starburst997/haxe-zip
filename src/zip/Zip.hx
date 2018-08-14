@@ -8,8 +8,12 @@ import haxe.zip.InflateImpl;
 
 import zip.ZipEntry;
 
-#if openfl
+#if lime
+#if (lime >= "7.0.0")
+import lime._internal.format.Deflate;
+#else
 import lime.utils.compress.Deflate;
+#end
 #end
 
 /**
@@ -75,7 +79,7 @@ class Zip
   // Weird that there is no official implementation of Deflate in haxe???
   public static inline function rawCompress(bytes:Bytes)
   {
-    #if openfl
+    #if lime
     return Deflate.compress(bytes);
     
     #elseif (cpp || neko)
@@ -110,7 +114,7 @@ class Zip
   // Get uncompressed bytes
   public static inline function uncompress( f:ZipEntry )
   {
-    #if (openfl || js || flash)
+    #if (lime || js || flash)
     var b = f.input.read(f.dataSize);
     return rawUncompress(b);
     
@@ -132,7 +136,7 @@ class Zip
 
   public static inline function rawUncompress(bytes:Bytes):Bytes
   {
-    #if openfl
+    #if lime
     return Deflate.decompress(bytes);
     
     #elseif flash
