@@ -76,10 +76,15 @@ class Zip
     }
   }
 
-  // Weird that there is no official implementation of Deflate in haxe???
   public static inline function rawCompress(bytes:Bytes)
   {
-    #if lime
+    #if js
+    // Haxe Deflate is currently unoptimized, use pako instead,
+    // didn't want 3rd party library but it works very well so...
+    var data = untyped __js__("pako.deflateRaw")(bytes.getData());
+    return Bytes.ofData(data);
+
+    #elseif lime
     return Deflate.compress(bytes);
     
     #elseif (cpp || neko)
@@ -95,12 +100,6 @@ class Zip
     data.deflate();
     return Bytes.ofData(data);
     
-    #elseif js
-    // Haxe Deflate is currently unoptimized, use pako instead,
-    // didn't want 3rd party library but it works very well so...
-    var data = untyped __js__("pako.deflateRaw")(bytes.getData());
-    return Bytes.ofData(data);
-    
     #else
     // Pure Haxe, should work everywhere else (VERY UNOPTIMIZED!!!)
     // But allow for step by step compression, could be nice for extremely huge file?
@@ -108,6 +107,24 @@ class Zip
     deflateStream.write(new BytesInput(bytes));
     
     return deflateStream.finalize();
+    #end
+  }
+
+  // Compress used in PNG
+  public static inline function compress(bytes:Bytes)
+  {
+    #if js
+    // Haxe Deflate is currently unoptimized, use pako instead,
+    // didn't want 3rd party library but it works very well so...
+    var data = untyped __js__("pako.deflate")(bytes.getData(), {level: 9});
+    return Bytes.ofData(data);
+
+    #elseif openfl
+
+    return format.tools.Deflate.run(bytes);
+    #else
+
+    return rawCompress(bytes);
     #end
   }
   
