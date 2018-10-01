@@ -1,5 +1,6 @@
 package zip;
 
+import haxe.ds.StringMap;
 import haxe.io.BufferInput;
 import haxe.io.Bytes;
 import haxe.io.BytesInput;
@@ -18,6 +19,19 @@ class ZipReader extends Reader
   public var bytes:Bytes;
   public var input:BytesInput;
   
+  public static inline function getEntries(bytes:Bytes) {
+    var entries = new StringMap<ZipEntry>();
+    var zip = new ZipReader(bytes);
+    var entry:ZipEntry;
+
+    while ( (entry = zip.getNextEntry()) != null )
+    {
+      entries.set(entry.fileName, entry);
+    }
+
+    return entries;
+  }
+
   public function new(bytes:Bytes) 
   {
     this.input = new BytesInput(bytes);
