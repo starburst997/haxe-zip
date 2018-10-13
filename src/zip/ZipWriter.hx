@@ -77,7 +77,17 @@ class ZipWriter extends Writer
   {
     writeCDR();
     
+    #if js
+    // For some reason, JS saves a bunch of zero at the end
+    var bytes = output.getBytes();
+    
+    var finalBytes = Bytes.alloc(output.length);
+    finalBytes.blit(0, bytes, 0, output.length);
+
+    return finalBytes;
+    #else
     return output.getBytes();
+    #end
   }
   
   // Allow optimization when Entry has no Data
