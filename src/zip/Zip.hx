@@ -147,7 +147,7 @@ class Zip
     
     #else
     
-    return rawUncompress_input(f.input);
+    return rawUncompress_haxe(f.input);
     #end
   }
 
