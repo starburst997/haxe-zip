@@ -79,10 +79,11 @@ class ZipWriter extends Writer
     
     #if js
     // For some reason, JS saves a bunch of zero at the end
+    var length = output.length;
     var bytes = output.getBytes();
     
-    var finalBytes = Bytes.alloc(output.length);
-    finalBytes.blit(0, bytes, 0, output.length);
+    var finalBytes = Bytes.alloc(length);
+    finalBytes.blit(0, bytes, 0, length);
 
     return finalBytes;
     #else
