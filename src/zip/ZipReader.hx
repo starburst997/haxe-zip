@@ -18,7 +18,7 @@ class ZipReader extends Reader
 {
   public var bytes:Bytes;
   public var input:BytesInput;
-  
+
   public static inline function getEntries(bytes:Bytes) {
     var entries = new StringMap<ZipEntry>();
     var zip = new ZipReader(bytes);
@@ -146,6 +146,9 @@ class ZipReader extends Reader
       if ( e.compressed )
       {
         #if neko
+        #if true
+        trace('Currently broken?');
+        #else
         // enter progressive mode : we use a different input which has
         // a temporary buffer, this is necessary since we have to uncompress
         // progressively, and after that we might have pending read data
@@ -178,6 +181,7 @@ class ZipReader extends Reader
           if ( r.done ) break;
         }
         e.data = out.getBytes();
+        #end
         #else
         e.data = Zip.rawUncompress_haxe(i);
         #end
