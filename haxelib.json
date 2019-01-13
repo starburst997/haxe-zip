@@ -8,5 +8,7 @@
   "classPath": "src/",
   "releasenote" : "Edit Pako includes issue",
   "contributors" : ["starburst997"],
-  "dependencies" : {}
+  "dependencies" : {
+    "format": "3.4.1"
+  }
 }
