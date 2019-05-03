@@ -34,9 +34,15 @@ class ZipReader extends Reader
 
   public function new(bytes:Bytes) 
   {
-    this.input = new BytesInput(bytes);
-    this.bytes = bytes;
-    
+    try {
+      this.input = new BytesInput(bytes);
+      this.bytes = bytes;
+    } catch(e:Dynamic) {
+      bytes = Bytes.alloc(128);
+      this.input = new BytesInput(bytes);
+      this.bytes = bytes;
+    }
+
     super(this.input);
   }
   
